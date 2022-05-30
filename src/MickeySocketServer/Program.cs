@@ -2,6 +2,7 @@ using MickeySocketServer.Models;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -23,7 +24,8 @@ app.Map("/", async context =>
 
             var content = Encoding.ASCII.GetString(buffer, 0, requestSocket.Count);
 
-            var explorer = new Explorer(content);
+            Console.WriteLine(content);
+            var explorer = new Explorer(JsonSerializer.Deserialize<dynamic>(content));
 
             await webSocket.SendAsync(
                 Encoding.ASCII.GetBytes(explorer.GetContentFile()),
