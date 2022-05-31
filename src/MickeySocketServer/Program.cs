@@ -22,13 +22,16 @@ app.Map("/", async context =>
         {
             var requestSocket = await webSocket.ReceiveAsync(buffer, CancellationToken.None);
 
-            var content = Encoding.ASCII.GetString(buffer, 0, requestSocket.Count);
+            var content = Encoding.UTF8.GetString(buffer, 0, requestSocket.Count);
 
             Console.WriteLine(content);
-            var explorer = new Explorer(JsonSerializer.Deserialize<dynamic>(content));
+
+            var explorer = new Explorer(content);
+
+            explorer.MatchFile();
 
             await webSocket.SendAsync(
-                Encoding.ASCII.GetBytes(explorer.GetContentFile()),
+                Encoding.ASCII.GetBytes(""),
                 WebSocketMessageType.Text,
                 true,
                 CancellationToken.None);

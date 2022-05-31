@@ -26,17 +26,9 @@ while (ws.State == WebSocketState.Open)
     Console.WriteLine(@"Insira o diretório base: [C:\]");
     var baseDir = Console.ReadLine();
 
-    dynamic obj = new
-    {
-        Filename = file,
-        QtnBytes = qtnBytes,
-        BaseDir = baseDir
-    };
-
-    Console.WriteLine(JsonSerializer.Serialize(obj));
 
     await ws.SendAsync(
-        Encoding.ASCII.GetBytes(JsonSerializer.Serialize(obj)),
+        Encoding.UTF8.GetBytes($"{file},{qtnBytes},{baseDir}"),
         WebSocketMessageType.Text,
         true,
         CancellationToken.None);
