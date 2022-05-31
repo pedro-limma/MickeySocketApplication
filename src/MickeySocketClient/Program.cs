@@ -1,4 +1,5 @@
 ﻿using System.Net.WebSockets;
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -14,6 +15,8 @@ catch (Exception ex)
 }
 
 byte[] buffer = new byte[256];
+
+var timer = new Stopwatch();
 
 while (ws.State == WebSocketState.Open)
 {
@@ -32,14 +35,17 @@ while (ws.State == WebSocketState.Open)
         WebSocketMessageType.Text,
         true,
         CancellationToken.None);
-
+    timer.Start();
     var result = await ws.ReceiveAsync(buffer, CancellationToken.None);
+    timer.Stop();
 
     if (result.MessageType == WebSocketMessageType.Close)
         await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, null, CancellationToken.None);
     else
-        Console.WriteLine("[ARQUIVO ENCONTRADO]");
-        Console.WriteLine(Encoding.ASCII.GetString(buffer, 0, result.Count));
+    {
+        Console.WriteLine($"[ARQUIVO ENCONTRADO EM ({Encoding.ASCII.GetString(buffer, 0, result.Count)})]");
+        Console.WriteLine("Elapsed time: {0:hh\\:mm\\:ss\\.fff}", timer.Elapsed);
+    }
 }
 
 Console.ReadLine();

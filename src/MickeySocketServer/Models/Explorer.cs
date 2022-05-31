@@ -17,6 +17,8 @@
         public string Filename { get; set; }
         public int QtnBytes { get; set; }
 
+        public string PathReturn { get; set; }
+
 
         public void MatchFile()
         {
@@ -44,10 +46,9 @@
 
             if (!IsMatch)
             {
-                string[] directories = Directory.GetDirectories(path);
-
                 try
                 {
+                    string[] directories = Directory.GetDirectories(path);
                     Parallel.ForEach(directories, d => ScanDirectories(d));
                 }
                 catch (UnauthorizedAccessException ex)
@@ -73,9 +74,11 @@
 
         private void IsEquals(FileInfo fileInfo)
         {
-            if (fileInfo.Name == this.Filename &&  QtnBytes == fileInfo.Length)
+            if (fileInfo.Name == this.Filename && this.QtnBytes == fileInfo.Length)
             {
-                Console.WriteLine("ENCONTROU CARALHO");
+                Console.WriteLine($"Arquivo encontrado no caminho [{fileInfo.FullName}]");
+
+                this.PathReturn = fileInfo.FullName;    
             }
         }
     }

@@ -2,7 +2,6 @@ using MickeySocketServer.Models;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
-using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -10,6 +9,7 @@ var app = builder.Build();
 app.UseWebSockets();
 
 byte[] buffer = new byte[256];
+
 app.Map("/", async context =>
 {
     if (!context.WebSockets.IsWebSocketRequest)
@@ -31,7 +31,7 @@ app.Map("/", async context =>
             explorer.MatchFile();
 
             await webSocket.SendAsync(
-                Encoding.ASCII.GetBytes(""),
+                Encoding.ASCII.GetBytes(explorer.PathReturn),
                 WebSocketMessageType.Text,
                 true,
                 CancellationToken.None);
